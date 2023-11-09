@@ -1,5 +1,6 @@
 package com.example.geolocation;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.PersistableBundle;
 import android.widget.Button;
@@ -21,8 +22,8 @@ public class addLocationPage extends AppCompatActivity {
 
 
     @Override
-    public void onCreate(@Nullable Bundle savedInstanceState, @Nullable PersistableBundle persistentState) {
-        super.onCreate(savedInstanceState, persistentState);
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_location_add);
 
         addrInput = findViewById(R.id.addrTextEntry);
@@ -51,6 +52,9 @@ public class addLocationPage extends AppCompatActivity {
 
             // show success message
             Toast.makeText(this,"Location added!",Toast.LENGTH_SHORT).show();
+
+            Intent i = new Intent(this, MainActivity.class);
+            startActivity(i);
         }
 
     }
