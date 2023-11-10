@@ -8,6 +8,8 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.provider.BaseColumns;
 
+import androidx.annotation.NonNull;
+
 public class SQLiteManager extends SQLiteOpenHelper {
 
 
@@ -17,7 +19,9 @@ public class SQLiteManager extends SQLiteOpenHelper {
         private static final int DATABASE_VERSION = 1;
 
 
-        public static class LocationEntry implements BaseColumns {
+
+
+    public static class LocationEntry implements BaseColumns {
             public static final String TABLE_NAME = "tbl_notes";
             public static final String COLUMN_NAME_ADDRESS = "address";
             public static final String COLUMN_NAME_LATITUDE = "latitude";
@@ -65,7 +69,7 @@ public class SQLiteManager extends SQLiteOpenHelper {
 
         // add location to database
         // -------------------------
-        public void addDatbabaseLocation(Location location){
+        public void addDatbabaseLocation(Location location) {
             SQLiteDatabase db = this.getWritableDatabase();
 
             // Create a new map of values, where column names are the keys
@@ -77,13 +81,11 @@ public class SQLiteManager extends SQLiteOpenHelper {
             // Insert the new row, returning the primary key value of the new row
             long newRowId = db.insert(LocationEntry.TABLE_NAME, null, values);
 
-
         }
 
+        // open database object
         public void open() throws SQLException {
             db = this.getWritableDatabase();
-//        db = sqLiteManager.getWritableDatabase();
-
         }
 
         // get all locations from database
@@ -113,6 +115,7 @@ public class SQLiteManager extends SQLiteOpenHelper {
 
         }
 
+    // delete location from database
     public int deleteLocation(int id){
         SQLiteDatabase db = this.getWritableDatabase();
 
@@ -122,6 +125,40 @@ public class SQLiteManager extends SQLiteOpenHelper {
 
         return db.delete(LocationEntry.TABLE_NAME, sqlWhere, sqlArg);
     }
+
+    // check if location already exists
+    // used for initial loading
+    public boolean exists(@NonNull Location loc) {
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        String selection = LocationEntry.COLUMN_NAME_ADDRESS;
+        String selectionArgs[] = {loc.getAddress()};
+
+
+        // query database for location address
+//        Cursor cursor = db.query(LocationEntry.TABLE_NAME, null, selection, selectionArgs, null, null, null);
+
+        String Query = "Select * from " + LocationEntry.TABLE_NAME + " where " + selection + " = \"" + loc.getAddress() + "\"";
+        Cursor cursor = db.rawQuery(Query, null);
+
+        // if no results return true
+        if (cursor.getCount() <= 0){
+            return false;
+        } else {
+            return true;
+        }
+
+    }
+
+    public void clearDB(){
+        SQLiteDatabase db = this.getWritableDatabase();
+
+//        String Query = "DELETE FROM " + LocationEntry.TABLE_NAME;
+//        Cursor cursor = db.rawQuery(Query, null);
+        db.execSQL("delete from "+ LocationEntry.TABLE_NAME);
+
+    }
+
 
 }
 

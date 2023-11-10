@@ -26,6 +26,10 @@
             android:name=".addLocationPage">
         </activity>
 
+        <activity
+            android:name=".updateLocationPage">
+        </activity>
+
     </application>
 
 </manifest>
